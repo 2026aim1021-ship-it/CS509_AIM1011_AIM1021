@@ -29,19 +29,15 @@ typedef struct {
 } csr_graph;
 
 // Reads unweighted Adjacency
-
 adjacency_list read_unweighted_graph(const char *path);
 
 // Reads weighted Adjacency
-
 adjacency_list read_weighted_graph(const char *path);
 
 // Converts Adjacency list to CSR
-
 csr_graph adjacency_list_to_csr(const adjacency_list *g);
 
 // Free Memory
-
 void free_adjacency_list(adjacency_list *g);
 void free_csr_graph(csr_graph *g);
 
