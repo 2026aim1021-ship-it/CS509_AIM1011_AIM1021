@@ -5,6 +5,8 @@ int main(void)
 {
     int action;
 
+    system("mkdir -p ../Assignment__01/outputs");
+
     while (1)
     {
         printf("........ CS509 Graph Algorithms Wrapper ........\n");
@@ -33,21 +35,27 @@ int main(void)
         }
         else if (action == 2)
         {
-            system("../Assignment__01/driver/main 1 ../Assignment__01/tests/bfs.txt");
+            system("../Assignment__01/driver/main 1 ../Assignment__01/tests/bfs.txt | tee ../Assignment__01/outputs/bfs.out");
+            system("../Assignment__01/driver/main 1 ../Assignment__01/tests/bfs2.txt | tee ../Assignment__01/outputs/bfs2.out");
         }
         else if (action == 3)
         {
-            system("../Assignment__01/driver/main 2 ../Assignment__01/tests/dfs.txt");
+            system("../Assignment__01/driver/main 2 ../Assignment__01/tests/dfs.txt | tee ../Assignment__01/outputs/dfs.out");
+            system("../Assignment__01/driver/main 2 ../Assignment__01/tests/dfs2.txt | tee ../Assignment__01/outputs/dfs2.out");
         }
         else if (action == 4)
         {
-            system("../Assignment__01/driver/main 3 ../Assignment__01/tests/sssp.txt");
+            system("../Assignment__01/driver/main 3 ../Assignment__01/tests/sssp.txt | tee ../Assignment__01/outputs/sssp.out");
+            system("../Assignment__01/driver/main 3 ../Assignment__01/tests/sssp2.txt | tee ../Assignment__01/outputs/sssp2.out");
         }
         else if (action == 5)
         {
-            system("../Assignment__01/driver/main 1 ../Assignment__01/tests/bfs.txt");
-            system("../Assignment__01/driver/main 2 ../Assignment__01/tests/dfs.txt");
-            system("../Assignment__01/driver/main 3 ../Assignment__01/tests/sssp.txt");
+            system("../Assignment__01/driver/main 1 ../Assignment__01/tests/bfs.txt | tee ../Assignment__01/outputs/bfs.out");
+            system("../Assignment__01/driver/main 1 ../Assignment__01/tests/bfs2.txt | tee ../Assignment__01/outputs/bfs2.out");
+            system("../Assignment__01/driver/main 2 ../Assignment__01/tests/dfs.txt | tee ../Assignment__01/outputs/dfs.out");
+            system("../Assignment__01/driver/main 2 ../Assignment__01/tests/dfs2.txt | tee ../Assignment__01/outputs/dfs2.out");
+            system("../Assignment__01/driver/main 3 ../Assignment__01/tests/sssp.txt | tee ../Assignment__01/outputs/sssp.out");
+            system("../Assignment__01/driver/main 3 ../Assignment__01/tests/sssp2.txt | tee ../Assignment__01/outputs/sssp2.out");
         }
         else
         {
