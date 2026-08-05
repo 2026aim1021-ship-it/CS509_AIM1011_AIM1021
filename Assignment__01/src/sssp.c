@@ -111,6 +111,11 @@ void printDistance()
     }
 }
 
+// This main() is only for building sssp.c as a standalone program
+// (gcc -DSSSP_STANDALONE_MAIN src/sssp.c -o sssp). It is compiled out when
+// sssp.c is linked into driver/main.c, which already defines main() and
+// calls readGraph/makeCSR/dijkstra/printDistance directly for choice 3.
+#ifdef SSSP_STANDALONE_MAIN
 int main(int argc, char *argv[])
 {
     if (argc < 2)
@@ -140,3 +145,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+#endif

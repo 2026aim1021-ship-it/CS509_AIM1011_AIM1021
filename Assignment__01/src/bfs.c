@@ -1,81 +1,86 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "csr.h"
+#include "graph.h"
 
-void bfs(csr_graph *csr, int source)
+bfs_result bfs(const csr_graph *graph, int source)
 {
-    int V = csr->vertices;
+    int V = graph->V;
+
+    bfs_result result;
+    result.traversal = (int *)malloc(V * sizeof(int));
+    result.distance = (int *)malloc(V * sizeof(int));
+    result.traversal_size = 0;
 
     int *visited = (int *)calloc(V, sizeof(int));
-    int *distance = (int *)malloc(V * sizeof(int));
     int *queue = (int *)malloc(V * sizeof(int));
 
-    if (visited == NULL || distance == NULL || queue == NULL)
+    if (result.traversal == NULL || result.distance == NULL ||
+        visited == NULL || queue == NULL)
     {
         printf("Memory allocation failed.\n");
 
+        free(result.traversal);
+        free(result.distance);
         free(visited);
-        free(distance);
         free(queue);
 
-        return;
+        result.traversal = NULL;
+        result.distance = NULL;
+        result.traversal_size = 0;
+
+        return result;
     }
 
     for (int i = 0; i < V; i++)
     {
-        distance[i] = -1;
+        result.distance[i] = -1;
     }
 
     int front = 0;
     int rear = 0;
 
     visited[source] = 1;
-    distance[source] = 0;
+    result.distance[source] = 0;
 
     queue[rear++] = source;
-
-    printf("Algorithm : BFS\n");
-    printf("Source    : %d\n", source);
-
-    printf("Traversal : ");
 
     while (front < rear)
     {
         int current = queue[front++];
 
-        printf("%d ", current);
+        result.traversal[result.traversal_size++] = current;
 
-        for (int i = csr->row_ptr[current];
-             i < csr->row_ptr[current + 1];
+        for (int i = graph->row_ptr[current];
+             i < graph->row_ptr[current + 1];
              i++)
         {
-            int neighbour = csr->col_idx[i];
+            int neighbour = graph->col_idx[i];
 
             if (!visited[neighbour])
             {
                 visited[neighbour] = 1;
-                distance[neighbour] = distance[current] + 1;
+                result.distance[neighbour] = result.distance[current] + 1;
 
                 queue[rear++] = neighbour;
             }
         }
     }
 
-    printf("\n");
-
-    printf("Distances\n");
-
-    for (int i = 0; i < V; i++)
-    {
-        printf("%d : ", i);
-
-        if (distance[i] == -1)
-            printf("INF\n");
-        else
-            printf("%d\n", distance[i]);
-    }
-
     free(visited);
-    free(distance);
     free(queue);
+
+    return result;
+}
+
+void free_bfs_result(bfs_result *result)
+{
+    if (result == NULL)
+        return;
+
+    free(result->traversal);
+    free(result->distance);
+
+    result->traversal = NULL;
+    result->distance = NULL;
+    result->traversal_size = 0;
 }
