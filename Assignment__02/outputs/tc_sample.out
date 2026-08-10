@@ -1,0 +1,7 @@
+Algorithm: Triangle Counting
+Total triangles: 3
+Triangles found:
+(0, 1, 2)
+(1, 2, 3)
+(3, 4, 5)
+Execution time: 0.00848 ms
