@@ -1,75 +1,151 @@
 #include <iostream>
-#include <fstream>
-#include <chrono>
+#include <string>
 #include <vector>
+#include <ctime>
 
-#include "../src/csr_weighted.h"
-#include "../src/triangleCounting.h"
-
-using namespace std;
-using clk = chrono::high_resolution_clock;
-
-static double elapsed_ms(clk::time_point start, clk::time_point end){
-    return chrono::duration<double, milli>(end - start).count();
+extern "C" {
+#include "../../Assignment__01/src/graph.h"
+#include "../../Assignment__01/src/csr.h"
 }
 
-int main(int argc, char *argv[]){
-    if(argc < 2){
-        cout << "Usage: " << argv[0] << " <inputfile>\n";
-        return 1;
-    }
+#include "../src/betweenness.hpp"
+#include "../src/connectedComponents.hpp"
+#include "../src/triangleCounting.hpp"
 
-    const char *path = argv[1];
-    ifstream fin(path);
+using namespace std;
 
-    if(!fin.is_open()){
-        cout << "Failed to load graph from " << path << "\n";
-        return 1;
-    }
+int main()
+{
+    while (true)
+    {
+        cout << "\n==============================\n";
+        cout << "      ASSIGNMENT 2 - GRAPH\n";
+        cout << "==============================\n";
+        cout << "1. Betweenness Centrality\n";
+        cout << "2. Connected Components\n";
+        cout << "3. Triangle Counting\n";
+        cout << "4. Exit\n";
+        cout << "Enter choice: ";
 
-    int V, E;
-    fin >> V >> E;
+        int choice;
+        cin >> choice;
 
-    if(!fin || V <= 0){
-        cout << "Failed to load graph from " << path << "\n";
-        return 1;
-    }
+        if (choice == 4)
+            break;
 
-    vector<vector<int>> adj(V);
-    for(int i = 0; i < V; i++){
-        int u, degree;
-        fin >> u >> degree;
-
-        if(!fin){
-            cout << "Failed to load graph from " << path << "\n";
-            return 1;
+        if (choice < 1 || choice > 3)
+        {
+            cout << "Invalid choice.\n";
+            continue;
         }
 
-        adj[u].resize(degree);
-        for(int j = 0; j < degree; j++)
-            fin >> adj[u][j];
+        string file;
+        cout << "Enter input file path: ";
+        cin >> file;
+        cout <<"\n";
+
+        // Read graph
+        adjacency_list graph =
+            read_unweighted_graph(file.c_str());
+
+        if (graph.V <= 0)
+        {
+            cout << "Failed to load graph.\n";
+            continue;
+        }
+
+        // CSR conversion - not timed
+        csr_graph csr =
+            adjacency_list_to_csr(&graph);
+
+        clock_t start = clock();
+
+        switch (choice)
+        {
+            case 1:
+            {
+                vector<double> bc =
+                    betweenness_centrality(&csr);
+
+                clock_t end = clock();
+
+                cout << "\nAlgorithm: Betweenness Centrality\n";
+                cout << "Vertex Centrality\n";
+
+                for (int i = 0; i < graph.V; i++)
+                    printf("%d %.2f\n", i, bc[i]);
+
+                printf("Execution time: %.3f ms\n",
+                       1000.0 * (end - start) /
+                       CLOCKS_PER_SEC);
+
+                break;
+            }
+
+            case 2:
+            {
+                int components;
+
+                vector<int> id =
+                    connected_components(
+                        &csr,
+                        components);
+
+                clock_t end = clock();
+
+                cout << "\nAlgorithm: Connected Components\n";
+                cout << "Number of components: "
+                     << components << "\n";
+
+                cout << "Vertex Component\n";
+
+                for (int i = 0; i < graph.V; i++)
+                    cout << i << " " << id[i] << "\n";
+
+                printf("Execution time: %.3f ms\n",
+                       1000.0 * (end - start) /
+                       CLOCKS_PER_SEC);
+
+                break;
+            }
+
+            case 3:
+            {
+                bool collect = (graph.V <= 100);
+
+                triangleCount result =
+                    triangle_counting(
+                        &csr,
+                        collect);
+
+                clock_t end = clock();
+
+                cout << "\nAlgorithm: Triangle Counting\n";
+                cout << "Total triangles: "
+                     << result.total << "\n";
+
+                if (collect)
+                {
+                    cout << "Triangles found:\n";
+
+                    for (auto &t : result.triangles)
+                        cout << "(" << t[0] << ", "
+                             << t[1] << ", "
+                             << t[2] << ")\n";
+                }
+
+                printf("Execution time: %.3f ms\n",
+                       1000.0 * (end - start) /
+                       CLOCKS_PER_SEC);
+
+                break;
+            }
+        }
+
+        free_csr_graph(&csr);
+        free_adjacency_list(&graph);
     }
 
-    csr_graph graph = buildCSR(V, adj); // preprocessing, not timed
-
-    // Listing individual triangles is only required for the two smallest
-    // graph sizes (10 and 100 vertices) per the spec.
-    bool collect = (V <= 100);
-
-    auto start = clk::now();
-    triangleCount result = triangle_counting(&graph, collect);
-    auto end = clk::now();
-
-    cout << "Algorithm: Triangle Counting\n";
-    cout << "Total triangles: " << result.total << "\n";
-
-    if(collect){
-        cout << "Triangles found:\n";
-        for(auto &t : result.triangles)
-            cout << "(" << t[0] << ", " << t[1] << ", " << t[2] << ")\n";
-    }
-
-    cout << "Execution time: " << elapsed_ms(start, end) << " ms\n";
-
+    cout << "Exiting...\n";
     return 0;
 }

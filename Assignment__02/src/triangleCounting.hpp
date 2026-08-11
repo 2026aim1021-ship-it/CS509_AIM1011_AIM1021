@@ -1,7 +1,10 @@
 #ifndef TRIANGLE_COUNTING_H
 #define TRIANGLE_COUNTING_H
 
-#include "csr_weighted.h"
+extern "C" {
+#include "../../Assignment__01/src/csr.h"
+}
+
 #include <vector>
 #include <array>
 

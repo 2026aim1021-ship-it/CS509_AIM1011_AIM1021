@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
         printf("1 : BFS\n");
         printf("2 : DFS\n");
         printf("3 : SSSP\n");
+        printf("4 : Exit\n");
         return 1;
     }
 
@@ -110,6 +111,10 @@ int main(int argc, char *argv[])
 
         printf("Execution Time : %.3f ms\n",
                1000.0 * (end - start) / CLOCKS_PER_SEC);
+    }
+
+    else if(choice == 4) {
+        return 0;
     }
 
     else
