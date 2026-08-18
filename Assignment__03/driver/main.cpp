@@ -8,15 +8,89 @@ extern "C" {
 
 #include "../src/maxflowMincut.hpp"
 
-// NOTE: Gradient Descent (the other half of this buddy task) is being
-// implemented separately. Once "../src/gradientDescent.hpp" exists with
-// read_gd_input() / gradient_descent(), #include it above, add a
-// run_gradient_descent() helper (same shape as run_maxflow_mincut()
-// below), and swap it in for the "not wired in yet" branch under
-// choice == 1 in main(). Menu numbering (1 = Gradient Descent,
-// 2 = Maxflow-Mincut) is already reserved so nothing else needs to move.
+#include <vector>
+#include <iomanip>
+
+bool read_gd_input(const std::string &path,
+                   int &degree,
+                   std::vector<double> &coefficients,
+                   double &initial_x,
+                   double &learning_rate,
+                   double &tolerance,
+                   int &max_iterations,
+                   std::string &error);
+
+void gradient_descent(const std::vector<double> &coefficients,
+                      double initial_x,
+                      double learning_rate,
+                      double tolerance,
+                      int max_iterations,
+                      double &final_x,
+                      double &final_f,
+                      int &iterations,
+                      bool &converged);
 
 using namespace std;
+
+static void run_gradient_descent(const string &file)
+{
+    int degree;
+    vector<double> coefficients;
+    double initial_x;
+    double learning_rate;
+    double tolerance;
+    int max_iterations;
+    string error;
+
+    if (!read_gd_input(
+            file,
+            degree,
+            coefficients,
+            initial_x,
+            learning_rate,
+            tolerance,
+            max_iterations,
+            error))
+    {
+        cout << "Invalid Gradient Descent input: "
+             << error << "\n";
+        return;
+    }
+
+    double final_x;
+    double final_f;
+    int iterations;
+    bool converged;
+
+    clock_t start = clock();
+
+    gradient_descent(
+        coefficients,
+        initial_x,
+        learning_rate,
+        tolerance,
+        max_iterations,
+        final_x,
+        final_f,
+        iterations,
+        converged);
+
+    clock_t end = clock();
+
+    cout << "\nAlgorithm: Gradient Descent\n";
+    cout << "Degree: " << degree << "\n";
+
+    cout << fixed << setprecision(10);
+
+    cout << "Final x: " << final_x << "\n";
+    cout << "Final f(x): " << final_f << "\n";
+    cout << "Iterations: " << iterations << "\n";
+    cout << "Converged: "
+         << (converged ? "true" : "false") << "\n";
+
+    printf("Execution time: %.3f ms\n",
+           1000.0 * (end - start) / CLOCKS_PER_SEC);
+}
 
 static void run_maxflow_mincut(const string &file)
 {
@@ -89,10 +163,14 @@ int main()
         if (choice == 3)
             break;
 
-        if (choice == 1)
-        {
-            cout << "Gradient Descent is not wired in yet "
-                    "(pending the other half of the pair's files).\n";
+        if (choice == 1){
+            string file;
+
+            cout << "Enter input file path: ";
+            cin >> file;
+            cout << "\n";
+
+            run_gradient_descent(file);
             continue;
         }
 

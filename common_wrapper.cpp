@@ -9,8 +9,7 @@ int run_command(const string& cmd)
     return system(cmd.c_str());
 }
 
-int main()
-{
+int main(){
     while (true)
     {
         cout << "\n========================================\n";
@@ -18,7 +17,8 @@ int main()
         cout << "========================================\n";
         cout << "1. Evaluate Assignment 1\n";
         cout << "2. Evaluate Assignment 2\n";
-        cout << "3. Exit\n";
+        cout << "3. Evaluate Assignment 3\n";
+        cout << "4. Exit\n";
         cout << "Enter choice: ";
 
         int assignment;
@@ -32,7 +32,7 @@ int main()
             continue;
         }
 
-        if (assignment == 3)
+        if (assignment == 4)
             break;
 
         if (assignment == 1)
@@ -144,6 +144,45 @@ int main()
 
             // Assignment 2 has its own interactive driver.
             run_command("Assignment__02/driver/main");
+        }
+        else if (assignment == 3){
+            cout << "\n--- Assignment 3 ---\n";
+
+            // Compile Assignment 1 C dependencies first.
+            string c1 =
+                "gcc -I Assignment__01/src -c "
+                "Assignment__01/src/graph.c "
+                "-o /tmp/a3_graph.o";
+
+            string c2 =
+                "gcc -I Assignment__01/src -c "
+                "Assignment__01/src/csr.c "
+                "-o /tmp/a3_csr.o";
+
+            if (run_command(c1) != 0 ||
+                run_command(c2) != 0)
+            {
+                cout << "\nAssignment 1 dependency compilation failed.\n";
+                continue;
+            }
+
+            // Compile Assignment 3 driver + both buddy-task algorithms.
+            string compile_a3 =
+                "g++ -std=c++17 -I Assignment__01/src "
+                "Assignment__03/driver/main.cpp "
+                "Assignment__03/src/gradientDescent.cpp "
+                "Assignment__03/src/maxflowMincut.cpp "
+                "/tmp/a3_graph.o "
+                "/tmp/a3_csr.o "
+                "-o Assignment__03/driver/main";
+
+            if (run_command(compile_a3) != 0)
+            {
+                cout << "\nAssignment 3 compilation failed.\n";
+                continue;
+            }
+
+            run_command("Assignment__03/driver/main");
         }
         else
         {
