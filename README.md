@@ -2,60 +2,139 @@
 
 ## Repository Overview
 
-This repo holds our CS509 lab work.
+This repository contains the CS509 laboratory Buddy Assignments.
 
-- **Assignment 01** (C) — BFS, DFS, Dijkstra's SSSP over a CSR-based
-  graph representation. See `Assignment__01/readme.md`.
-- **Assignment 02** (C++) — Betweenness Centrality, Connected
-  Components, Triangle Counting. Reuses Assignment 01's CSR code and
-  BFS/DFS rather than duplicating it. See `Assignment__02/readme.md`.
+- **Assignment 01** (C) — BFS, DFS, and Dijkstra's SSSP using a CSR-based graph representation.
+- **Assignment 02** (C++) — Betweenness Centrality, Connected Components, and Triangle Counting. Assignment 01's CSR, BFS, and DFS functionality is reused.
+- **Assignment 03** (C++) — **Gradient Descent** and **Maxflow-Mincut**. 
 
-Each assignment folder has its own `readme.md` with the algorithm
-details, file structure, test cases, and results. Both run through the
-single combined wrapper at the repo root, `common_wrapper.cpp`.
+## Buddy / Pair Details
 
-## Student / Pair Details
 
-Mode: Double (Pair)
+- **Shivank Shubanshi** — 2026AIM1021
+- **Aman Kumar** — 2026AIM1011
 
-- Shivank Shubanshi — 2026AIM1021
-- Aman Kumar — 2026AIM1011
+---
 
 ## Language and Environment
 
-- Language: C (Assignment 01), C++17 (Assignment 02)
-- Compiler: gcc / g++
-- Shell: bash (Git Bash / WSL / Linux terminal)
+- Assignment 01: C
+- Assignment 02: C++17
+- Assignment 03: C++17
+- Compiler: `gcc` / `g++`
+- Shell: Bash / Git Bash / WSL / Linux terminal
+
+
+---
 
 ## Directory Structure
 
-```
+```text
 CS509_AIM1011_AIM1021/
 ├── README.md
-├── common_wrapper.cpp   combined menu-driven wrapper for both assignments
-├── Assignment__01/      BFS / DFS / SSSP — see Assignment__01/readme.md
-└── Assignment__02/      Betweenness Centrality / Connected Components / Triangle Counting — see Assignment__02/readme.md
+├── common_wrapper.cpp
+│
+├── Assignment__01/
+│   ├── driver/
+│   ├── src/
+│   ├── tests/
+│   ├── outputs/
+│   └── readme.md
+│
+├── Assignment__02/
+│   ├── driver/
+│   ├── src/
+│   ├── tests/
+│   ├── outputs/
+│   └── readme.md
+│
+└── Assignment__03/
+    ├── driver/
+    ├── src/
+    ├── tests/
+    ├── outputs/
+    ├── tools/
+    └── readme.md
 ```
 
-## Common Wrapper: Build and Usage
+---
 
-```
-g++ -std=c++17 -o common_wrapper common_wrapper.cpp
-./common_wrapper
-```
+# Assignment 01
 
-```
+Assignment 01 contains:
+
+- BFS
+- DFS
+- Dijkstra's Single-Source Shortest Path
+
+The graph representation uses CSR.
+
+---
+
+# Assignment 02
+
+Assignment 02 contains:
+
+- Betweenness Centrality
+- Connected Components
+- Triangle Counting
+
+The implementation reuses the CSR and traversal functionality developed in Assignment 01.
+
+
+---
+
+# Assignment 03 
+
+Assignment 03 contains:
+
+1. **Gradient Descent**
+2. **Maxflow-Mincut**
+
+The assignment specification states that Gradient Descent does not use CSR, while Maxflow-Mincut does.
+
+---
+
+# Common Wrapper
+
+The repository contains `common_wrapper.cpp` as the common entry point.
+
+The menu is intended to expose:
+
+```text
 1. Evaluate Assignment 1
 2. Evaluate Assignment 2
-3. Exit
+3. Evaluate Assignment 3
+4. Exit
 ```
 
-- **Option 1** asks for an algorithm (BFS / DFS / SSSP) and an input
-  file path, compiles `Assignment__01/driver/main`, and runs it.
-- **Option 2** compiles Assignment 2's sources against Assignment 1's
-  object files, then hands off to Assignment 2's own driver menu
-  (Betweenness Centrality / Connected Components / Triangle Counting),
-  which repeatedly asks for an input file path until you choose Exit.
+The Assignment 3 driver accepts an input-file path and then runs the selected buddy-task algorithm, as required by the Assignment 3 driver behaviour. fileciteturn1file0L425-L436
 
-See each assignment's `readme.md` for its file layout, algorithm
-details, and result tables.
+### Direct Any Assignment compilation
+
+From the repository root:
+
+```bash
+gcc -I Assignment__01/src -c Assignment__01/src/graph.c -o /tmp/a3_graph.o
+gcc -I Assignment__01/src -c Assignment__01/src/csr.c -o /tmp/a3_csr.o
+
+g++ -std=c++17 -O2 -I Assignment__01/src \
+    Assignment__03/driver/main.cpp \
+    Assignment__03/src/gradientdescent.cpp \
+    Assignment__03/src/maxflowMincut.cpp \
+    /tmp/a3_graph.o \
+    /tmp/a3_csr.o \
+    -o Assignment__03/driver/main
+```
+
+Then:
+
+```bash
+./Assignment__03/driver/main
+```
+
+The source file present in this repository is named:
+
+```text
+Assignment__03/src/gradientdescent.cpp
+```
